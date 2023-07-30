@@ -67,7 +67,17 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
    */
   @Override
   public void votar(String cpfPessoaEleitora, int numeroPessoaCandidata) {
-    // Implementation of the voting process.
+    if (cpfsComputados.contains(cpfPessoaEleitora)) {
+      System.out.println("Pessoa eleitora já votou!");
+      return;
+    }
+    for (PessoaCandidata candidate : pessoasCandidatas) {
+      if (candidate.getNumero() == numeroPessoaCandidata) {
+        candidate.receberVoto();
+        cpfsComputados.add(cpfPessoaEleitora);
+        return;
+      }
+    }
   }
 
   /**
@@ -75,7 +85,22 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
    */
   @Override
   public void mostrarResultado() {
-    // Implementation to display the election results.
+    int totalVotes = cpfsComputados.size();
+
+    if (totalVotes == 0) {
+      System.out.println("É preciso ter pelo menos um voto para mostrar o resultado.");
+      return;
+    }
+
+    for (PessoaCandidata candidate : pessoasCandidatas) {
+      int candidateVotes = candidate.getVotos();
+      double votingPercentage = ((double) candidateVotes / totalVotes) * 100;
+      System.out.println("Nome: " + candidate.getNome() + " - " + candidateVotes + " votos ( "
+          + Math.round(votingPercentage) + "% )");
+    }
+
+    System.out.println("Total de votos: " + totalVotes);
   }
 }
+
 
